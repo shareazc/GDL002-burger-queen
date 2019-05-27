@@ -2,7 +2,7 @@ import React from "react";
 import firebase from "../firebase";
 import { NavigationBarWaiter } from "./NavigationBarWaiter";
 import { WaiterTabs } from "./WaiterTabs";
-import { Bill } from "./Bill";
+import Bill from "./Bill";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -27,9 +27,11 @@ class LunchAndDinner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      lnchdnnr: []
+      lnchdnnr: [],
+   
     };
-  }
+  
+  };
 
   componentDidMount() {
     const rootRef = firebase.database().ref();
@@ -51,6 +53,8 @@ class LunchAndDinner extends React.Component {
       });
     });
   }
+
+  
 
   render() {
     return (

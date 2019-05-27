@@ -2,11 +2,12 @@ import React from "react";
 import firebase from "../firebase";
 import { NavigationBarWaiter } from "./NavigationBarWaiter";
 import { WaiterTabs } from "./WaiterTabs";
-import { Bill } from "./Bill";
+import Bill from "./Bill";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
+import Table from 'react-bootstrap/Table';
 import Button from "react-bootstrap/Button";
 import styled from "styled-components";
 
@@ -33,9 +34,14 @@ class Breakfast extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      brkfst: []
+      brkfst: [],
+      orders:[],
+      total: 0
     };
-  }
+    this.submit = this.submit.bind(this);
+    this.deleteRow = this.deleteRow.bind(this);
+    this.sumOrder = this.sumOrder.bind(this)
+  };
 
   componentDidMount() {
     const menuRef = firebase.database().ref();
@@ -57,6 +63,33 @@ class Breakfast extends React.Component {
     });
   }
 
+  submit (dish, price) {
+    const order = {
+      dish: dish,
+      price: price
+    }
+    this.setState({
+      orders:[...this.state.orders, order]
+    })
+  };
+
+  deleteRow(e, brkfst) {
+    e.preventDefault(e)
+    this.setState(prevState => ({
+      orders: prevState.orders.filter(element => element != brkfst)
+    }));
+  }
+
+  sumOrder () {
+    const priceArr = this.state.orders.map((el) => el.price)
+    const items = priceArr.reduce((sum, result) => {
+      return sum + result;
+    });
+    this.setState ({
+      total: items
+    })
+  };
+
   render() {
     return (
       <div className="Breakfast">
@@ -74,7 +107,9 @@ class Breakfast extends React.Component {
                         <Card.Img variant="top" src={dish.img} />
                         <Card.Body>
                           <Card.Title>{dish.dish}</Card.Title>
-                          <Button variant="primary" block>
+                          <Button variant="primary" block onClick={() => {
+                            this.submit(dish.dish, dish.price)
+                          }}>
                             ${dish.price}
                           </Button>
                         </Card.Body>
@@ -84,7 +119,23 @@ class Breakfast extends React.Component {
                 })}
               </Col>
               <Col md={4}>
-                <Bill />
+                <Card>
+                  <Card.Header>Cuenta</Card.Header>
+                  <Card.Body>
+                  <Table responsive>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Platillo</th>
+                        <th>Precio</th>
+                      </tr>
+                    </thead>
+                  
+                      <Bill menuList={this.state.orders} handleDelete={this.deleteRow} />
+                    </Table>
+                  <Button variant="success" block onClick={this.sumOrder} >Total : $ {this.state.total}</Button>
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
           </Styles>
