@@ -28,7 +28,7 @@ const Styles = styled.div`
 
 export const Home = () => (
     <Styles>
-        <img className="logo" src={logoBQ}></img>
+        <img className="logo" src={logoBQ}alt="logo BurgerQueen"></img>
 
         <Container>
             <Row className="buttons">

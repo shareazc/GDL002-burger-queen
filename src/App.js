@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Home } from "./components/Home";
 import { Waiter } from "./components/Waiter";
 import { Kitchen } from "./components/Kitchen";
-import { Breakfast } from "./components/Breakfast";
+import Breakfast from "./components/Breakfast";
 import { LunchAndDinner } from "./components/LunchAndDinner";
 import { PendingOrders } from "./components/PendingOrders";
 import { NewOrders } from "./components/NewOrders";
