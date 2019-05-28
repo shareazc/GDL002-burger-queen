@@ -7,6 +7,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
+import Table from 'react-bootstrap/Table';
 import Button from "react-bootstrap/Button";
 import styled from "styled-components";
 
@@ -16,10 +17,8 @@ const Styles = styled.div`
     border-left: 1px solid #707070;
   }
 
-  .col-md-8 {
-    display: flex;
-
-    flexwrap: wrap;
+  .col-md-8 > div {
+    display: inline;
   }
 `;
 
@@ -28,9 +27,12 @@ class LunchAndDinner extends React.Component {
     super(props);
     this.state = {
       lnchdnnr: [],
-   
+      orders:[],
+      total: 0
     };
-  
+    this.submit = this.submit.bind(this);
+    this.deleteRow = this.deleteRow.bind(this);
+    this.sumOrder = this.sumOrder.bind(this)
   };
 
   componentDidMount() {
@@ -54,11 +56,36 @@ class LunchAndDinner extends React.Component {
     });
   }
 
-  
+  submit (dish, price) {
+    const order = {
+      dish: dish,
+      price: price
+    }
+    this.setState({
+      orders:[...this.state.orders, order]
+    })
+  };
+
+  deleteRow(e, lnchdnnr) {
+    e.preventDefault(e)
+    this.setState(prevState => ({
+      orders: prevState.orders.filter(element => element != lnchdnnr)
+    }));
+  }
+
+  sumOrder () {
+    const priceArr = this.state.orders.map((el) => el.price)
+    const items = priceArr.reduce((sum, result) => {
+      return sum + result;
+    });
+    this.setState ({
+      total: items
+    })
+  };
 
   render() {
     return (
-      <div className="Breakfast">
+      <div className="LunchDinner">
         <NavigationBarWaiter />
         <WaiterTabs />
         <Container>
@@ -75,7 +102,9 @@ class LunchAndDinner extends React.Component {
                         <Card.Body>
                           <Card.Title>{dish.dish}</Card.Title>
                           <Card.Text>{dish.description}</Card.Text>
-                          <Button variant="primary" block>
+                          <Button variant="primary" block block onClick={() => {
+                            this.submit(dish.dish, dish.price)
+                          }}>
                             ${dish.price}
                           </Button>
                         </Card.Body>
@@ -86,7 +115,23 @@ class LunchAndDinner extends React.Component {
                
               </Col>
               <Col md={4}>
-                <Bill />
+              <Card>
+                  <Card.Header>Cuenta</Card.Header>
+                  <Card.Body>
+                  <Table responsive>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Platillo</th>
+                        <th>Precio</th>
+                      </tr>
+                    </thead>
+                  
+                      <Bill menuList={this.state.orders} handleDelete={this.deleteRow} />
+                    </Table>
+                  <Button variant="success" block onClick={this.sumOrder} >Total : $ {this.state.total}</Button>
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
           </Styles>

@@ -11,9 +11,6 @@ import Table from 'react-bootstrap/Table';
 import Button from "react-bootstrap/Button";
 import styled from "styled-components";
 
-//Se agregó box-sizing y ya no hay overflow, pero ahora manda
-//la cuenta a un renglón aparte
-
 const Styles = styled.div`
   .col-md-4 {
     border-left: 1px solid #707070;
@@ -25,7 +22,6 @@ const Styles = styled.div`
 
   .col-md-8 {
     display: flex;
-
     flexwrap: wrap;
   }
 `;
